@@ -15,6 +15,7 @@ import express from "express"
 // }
 
 let users = [];
+let tweets = [];
 
 const app = express()
 app.use(express.json());
@@ -22,8 +23,28 @@ app.use(express.json());
 app.post("/sign-up", (req, res) => {
     const usersData = req.body
     users.push(usersData)
-    res.sendStatus(200);
+    res.send(req.body.username)
+    //res.sendStatus(200);
 })
 
+
+app.post("/tweets", (req,res) => {
+    const tweetData = req.body;
+    if (users.find((user) => user.username === tweetData.username)) {
+        if (tweets.length > 9) {
+            tweets.shift()
+        }
+        tweets.push(tweetData);
+        res.sendStatus(200);
+    } else {
+        res.sendStatus(401);
+    }
+    
+})
+
+app.get("/tweets", (req,res) => {
+    res.send(tweets)
+    
+})
 
 app.listen(5000, () =>  console.log("Servidor ligado!"))
