@@ -33,7 +33,10 @@ app.post("/tweets", (req,res) => {
     if (users.find((user) => user.username === tweetData.username)) {
         if (tweets.length > 9) {
             tweets.shift()
-        }
+            }
+        if (avatarTweet.length > 9) {
+            avatarTweet.shift()
+                }
         tweets.push(tweetData);
         const user = users.find((user) => user.username === tweetData.username)
         avatarTweet.push({avatar: user.avatar, username: tweetData.username, tweet: tweetData.tweet})
