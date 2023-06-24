@@ -14,10 +14,6 @@ const signUpSchema = Joi.object({
     avatar: Joi.string().required()
   });
 
-const tweetsSchema = Joi.object({
-    username: Joi.string().required,
-    tweet: Joi.string().required()
-});
 
 app.post("/sign-up", (req, res) => {
     const usersData = req.body
@@ -40,11 +36,6 @@ app.post("/sign-up", (req, res) => {
 app.post("/tweets", (req,res) => {
     const tweetData = req.body;
 
-    const { error } = tweetsSchema.validate(tweetData);
-
-    if (error) {
-      return res.status(400).send(error.details[0].message);
-    }
 
     if (users.find((user) => user.username === tweetData.username)) {
         if (tweets.length > 9) {
