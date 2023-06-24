@@ -69,16 +69,4 @@ app.get("/tweets", (req,res) => {
     }
     )
 
-app.get("/tweets/:USERNAME", (req,res) => {
-    const {USERNAME} = req.params
-
-    const specificUser = avatarTweet.find((user) => user.username === USERNAME)
-    if(specificUser) {
-        res.status(200)
-    } else {
-        return []
-    }
-
-})
-
 app.listen(5000, () =>  console.log("Servidor ligado!"))
