@@ -1,18 +1,5 @@
 import express from "express"
-
-//matar uma porta: fuser -k porta tcp
-
-// //user format:
-// {
-// 	username: 'bobesponja', 
-// 	avatar: "https://cdn.shopify.com/s/files/1/0150/0643/3380/files/Screen_Shot_2019-07-01_at_11.35.42_AM_370x230@2x.png" 
-// }
-
-// tweet format:
-// {
-// 	username: "bobesponja",
-//   tweet: "Eu amo hambúrguer de siri!"
-// }
+import Joi from "joi"
 
 let users = [];
 let tweets = [];
@@ -21,8 +8,25 @@ let avatarTweet = [];
 const app = express()
 app.use(express.json());
 
+
+const signUpSchema = Joi.object({
+    username: Joi.string().required(),
+    avatar: Joi.string().required()
+  });
+
 app.post("/sign-up", (req, res) => {
     const usersData = req.body
+
+
+  const { error } = signUpSchema.validate(usersData);
+
+  if (error) {
+    return res.status(400).send(error.details[0].message);
+  }
+
+    if (!usersData.username) {
+        res.status(400).send("Username precisa ser preenchido!")
+    }
     users.push(usersData)
     res.sendStatus(200);
 })
