@@ -16,6 +16,7 @@ import express from "express"
 
 let users = [];
 let tweets = [];
+let avatarTweet = [];
 
 const app = express()
 app.use(express.json());
@@ -23,8 +24,7 @@ app.use(express.json());
 app.post("/sign-up", (req, res) => {
     const usersData = req.body
     users.push(usersData)
-    res.send(req.body.username)
-    //res.sendStatus(200);
+    res.sendStatus(200);
 })
 
 
@@ -35,6 +35,8 @@ app.post("/tweets", (req,res) => {
             tweets.shift()
         }
         tweets.push(tweetData);
+        const user = users.find((user) => user.username === tweetData.username)
+        avatarTweet.push({avatar: user.avatar, username: tweetData.username, tweet: tweetData.tweet})
         res.sendStatus(200);
     } else {
         res.sendStatus(401);
@@ -43,8 +45,9 @@ app.post("/tweets", (req,res) => {
 })
 
 app.get("/tweets", (req,res) => {
-    res.send(tweets)
-    
-})
+    res.send(avatarTweet)
+        
+    }
+    )
 
 app.listen(5000, () =>  console.log("Servidor ligado!"))
