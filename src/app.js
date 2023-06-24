@@ -14,6 +14,11 @@ const signUpSchema = Joi.object({
     avatar: Joi.string().required()
   });
 
+const tweetsSchema = Joi.object({
+    username: Joi.string().required,
+    tweet: Joi.string().required()
+});
+
 app.post("/sign-up", (req, res) => {
     const usersData = req.body
 
@@ -28,12 +33,19 @@ app.post("/sign-up", (req, res) => {
         res.status(400).send("Username precisa ser preenchido!")
     }
     users.push(usersData)
-    res.sendStatus(200);
+    res.sendStatus(201);
 })
 
 
 app.post("/tweets", (req,res) => {
     const tweetData = req.body;
+
+    const { error } = tweetsSchema.validate(tweetData);
+
+    if (error) {
+      return res.status(400).send(error.details[0].message);
+    }
+
     if (users.find((user) => user.username === tweetData.username)) {
         if (tweets.length > 9) {
             tweets.shift()
@@ -44,7 +56,7 @@ app.post("/tweets", (req,res) => {
         tweets.push(tweetData);
         const user = users.find((user) => user.username === tweetData.username)
         avatarTweet.push({avatar: user.avatar, username: tweetData.username, tweet: tweetData.tweet})
-        res.sendStatus(200);
+        res.sendStatus(201);
     } else {
         res.sendStatus(401);
     }
@@ -56,5 +68,17 @@ app.get("/tweets", (req,res) => {
         
     }
     )
+
+app.get("/tweets/:USERNAME", (req,res) => {
+    const {USERNAME} = req.params
+
+    const specificUser = avatarTweet.find((user) => user.username === USERNAME)
+    if(specificUser) {
+        res.status(200)
+    } else {
+        return []
+    }
+
+})
 
 app.listen(5000, () =>  console.log("Servidor ligado!"))
